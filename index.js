@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 
 const sensor = require('./src/routes/sensor');
+app.use(express.json());
 app.use(sensor);
 
 app.listen(PORT, () => {
