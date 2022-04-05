@@ -1,32 +1,36 @@
 const pool = require('../config/postgre')
 
-const selectSensors = () => {
-    
-    let data = [];
+const selectSensors = async () => {
+   
+    try {
+        const data = await pool.query('SELECT * FROM sensors ORDER BY id ASC');
+        
+        console.log('(SUCCESS) - SELECT * FROM sensors ORDER BY id ASC')
+        
+        return data.rows;
+    } catch (error) {
 
-    pool.query('SELECT * FROM sensors ORDER BY id ASC', (error, results) => {
-        if (error) {
-          throw error;
-        }
-        data = results.rows;
-        console.log('data',data)
-    });
-    return data;
+        console.log('(ERROR) - SELECT * FROM sensors ORDER BY id ASC')
+        console.log('error');
+        throw 'error';    
+    }
 }
 
-const selectSensorsById = (id) => {
+const selectSensorsById = async (id) => {
     
-    let data = [];
+    try {
+        const data = await pool.query('SELECT * FROM sensors WHERE id = $1', [id]);
 
-    pool.query('SELECT * FROM sensors WHERE id = $1', [id], (error, results) => {
-        if (error) {
-            throw error;
-        }
-        console.log('SELECT id', id);
-        data = results.rows;
-    });
+        console.log(`(SUCCESS) - SELECT * FROM sensors WHERE id = ${id}`)
 
-    return data;
+        return data.rows[0];
+    } catch (error) {
+        
+        console.log(`(ERROR) - SELECT * FROM sensors WHERE id = ${id}`)
+        console.log(error)
+
+        throw 'error';
+    }
 } 
 
 const createSensor = (size, voltage, brand, type, last_measurement, localization) => {
